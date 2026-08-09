@@ -1,0 +1,36 @@
+name: "🤖 Email Summarizer Agent"
+
+on:
+  schedule:
+    # 8:00 AM IST = 2:30 AM UTC
+    - cron: "30 2 * * *"
+
+  # Allow manual trigger from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  run-email-summarizer:
+    name: "📬 Fetch & Summarize Emails"
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: email-summarizer
+
+    steps:
+      - name: "📥 Checkout repository"
+        uses: actions/checkout@v4
+
+      - name: "🐍 Setup Python"
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: "📦 Install dependencies"
+        run: pip install -r requirements.txt
+
+      - name: "🚀 Run Email Summarizer Agent"
+        env:
+          GMAIL_EMAIL: ${{ secrets.GMAIL_EMAIL }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python src/main.py --now --email
