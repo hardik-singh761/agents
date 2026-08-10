@@ -8,10 +8,10 @@ A personal AI agent framework. Each agent runs **autonomously in the cloud** via
 
 ```
 GitHub Actions (free cloud servers)
-    │
+    ├── ⏰ 7:00 AM IST → daily-news-briefing runs → delivers AI news digest
+    ├── ⏰ 7:00 AM IST → freelance-gig-finder runs → delivers gig digest
     ├── ⏰ 8:00 AM IST → email-summarizer runs → emails you the digest
-    ├── ⏰ ???         → your-next-agent runs → delivers results
-    └── ⏰ ???         → another-agent runs   → does its thing
+    └── ⏰ ???         → your-next-agent runs → delivers results
 ```
 
 Each agent:
@@ -27,6 +27,8 @@ Each agent:
 
 | Agent | Description | Schedule | Delivery |
 |-------|-------------|----------|----------|
+| [daily-news-briefing](./daily-news-briefing/) | Curates & summarizes AI/tech news from HackerNews, ProductHunt, etc. | 7:00 AM IST | 📧 Email |
+| [freelance-gig-finder](./freelance-gig-finder/) | Scrapes Upwork, RemoteOK, and Freelancer, ranks gigs using Gemini | 7:00 AM IST | 📧 Email |
 | [email-summarizer](./email-summarizer/) | Daily Gmail inbox digest powered by Gemini AI | 8:00 AM IST | 📧 Email |
 
 ---
@@ -36,10 +38,14 @@ Each agent:
 ```
 agents/
 ├── .github/workflows/          ← GitHub Actions (cloud schedules)
+│   ├── daily-news-briefing.yml ← runs news agent daily at 7 AM
+│   ├── freelance-gig-finder.yml← runs gig finder daily at 7 AM
 │   ├── email-summarizer.yml    ← runs email agent daily at 8 AM
 │   └── README.md               ← workflow template for new agents
 ├── README.md                   ← You are here
 ├── .gitignore
+│
+├── shared/                     ← Shared utility code (e.g. mailer)
 │
 ├── email-summarizer/           ← Agent 1
 │   ├── README.md
