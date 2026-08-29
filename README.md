@@ -89,6 +89,7 @@ The job-finder agent scrapes **7 India-focused sources** daily (no API keys need
 | Himalayas | RSS Feed | Curated remote tech roles |
 | HN Who's Hiring | API | Startup & big-tech roles — filtered for India/Remote |
 | Arbeitnow | JSON API | Global listings filtered for India locations |
+| LinkedIn (via Google)| Web Search | Public LinkedIn job posts focused on India |
 
 Jobs are filtered for: `AI Engineer`, `GenAI Engineer`, `Data Scientist`, `ML Engineer`, `Agentic AI`, `LLM Engineer`, `NLP Engineer`, `Deep Learning` — and **only India-based or India-accepting Remote roles** are included.
 

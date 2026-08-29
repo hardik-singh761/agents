@@ -62,6 +62,11 @@ class JobFetcher:
         self.all_jobs.extend(arbeitnow)
         logging.info(f"Arbeitnow: fetched {len(arbeitnow)} jobs")
 
+        # 8. LinkedIn via Google Search
+        linkedin = self._fetch_linkedin_via_google()
+        self.all_jobs.extend(linkedin)
+        logging.info(f"LinkedIn/Google: fetched {len(linkedin)} jobs")
+
         # Hard filter out senior/staff/lead roles from the title
         fresher_jobs = []
         senior_terms = ["senior", "sr.", "sr ", "staff", "principal", "lead", "director", "manager", "head of", "vp ", "architect", "founding", "experienced"]
@@ -466,6 +471,53 @@ class JobFetcher:
                         })
             except Exception as e:
                 logging.warning(f"Arbeitnow failed for '{term}': {e}")
+        return jobs
+
+    # ─── Source 8: LinkedIn via Google Search ────────────────────
+
+    def _fetch_linkedin_via_google(self) -> list[dict]:
+        """Use Google Search to find recent LinkedIn job postings for India."""
+        jobs = []
+        # Target AI roles in major Indian tech hubs
+        queries = [
+            "site:in.linkedin.com/jobs/view/ \"AI Engineer\" OR \"Machine Learning\" Bangalore OR Hyderabad OR Pune",
+            "site:in.linkedin.com/jobs/view/ \"Data Scientist\" OR \"GenAI\" India fresher OR \"entry level\""
+        ]
+        
+        for q in queries:
+            try:
+                url = "https://www.google.com/search?q=" + urllib.parse.quote(q) + "&tbs=qdr:w" # Past week only
+                req = urllib.request.Request(url, headers={
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+                })
+                with urllib.request.urlopen(req, timeout=10) as resp:
+                    html = resp.read().decode("utf-8", errors="ignore")
+                
+                # Extract LinkedIn URLs and Titles
+                links = re.findall(r'href="(https://in\.linkedin\.com/jobs/view/[^"]+)"', html)
+                
+                for link in set(links):
+                    # Basic extraction from URL slug
+                    parts = link.split("/")[-1].split("-")
+                    title_parts = [p for p in parts if not p.isdigit() and p not in ["at", "in", "job"]]
+                    title = " ".join(title_parts).title().replace("Machine Learning", "ML")
+                    
+                    if self._is_relevant(title):
+                        jobs.append({
+                            "title": title[:100],
+                            "company": "See LinkedIn",
+                            "url": link,
+                            "source": "LinkedIn (via Google)",
+                            "location": "India",
+                            "salary": "",
+                            "description": "LinkedIn Job Posting. Click to view details.",
+                            "published": "Recent",
+                            "is_big_company": False,
+                            "experience_score": 0,
+                        })
+            except Exception as e:
+                logging.warning(f"LinkedIn/Google search failed for query: {e}")
+                
         return jobs
 
     # ─── Utilities ───────────────────────────────────────────────
