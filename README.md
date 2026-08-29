@@ -8,10 +8,10 @@ A personal AI agent framework. Each agent runs **autonomously in the cloud** via
 
 ```
 GitHub Actions (free cloud servers)
-    ├── ⏰ 7:00 AM IST → daily-news-briefing runs → delivers AI news digest
-    ├── ⏰ 7:00 AM IST → freelance-gig-finder runs → delivers gig digest
-    ├── ⏰ 8:00 AM IST → email-summarizer runs → emails you the digest
-    └── ⏰ ???         → your-next-agent runs → delivers results
+    ├── ⏰ 7:00 AM IST → job-finder runs        → delivers job digest
+    ├── ⏰ 8:00 AM IST → email-summarizer runs   → emails inbox digest
+    ├── 💤 DISABLED    → daily-news-briefing      → (can re-enable anytime)
+    └── 💤 DISABLED    → freelance-gig-finder     → (can re-enable anytime)
 ```
 
 Each agent:
@@ -25,11 +25,12 @@ Each agent:
 
 ## 📂 Available Agents
 
-| Agent | Description | Schedule | Delivery |
-|-------|-------------|----------|----------|
-| [daily-news-briefing](./daily-news-briefing/) | Curates & summarizes AI/tech news from HackerNews, ProductHunt, etc. | 7:00 AM IST | 📧 Email |
-| [freelance-gig-finder](./freelance-gig-finder/) | Scrapes Upwork, RemoteOK, and Freelancer, ranks gigs using Gemini | 7:00 AM IST | 📧 Email |
-| [email-summarizer](./email-summarizer/) | Daily Gmail inbox digest powered by Gemini AI | 8:00 AM IST | 📧 Email |
+| Agent | Description | Schedule | Status |
+|-------|-------------|----------|--------|
+| [job-finder](./job-finder/) | Finds AI/ML/Data Science/GenAI jobs at top companies, ranks by relevance for freshers | 7:00 AM IST | ✅ Active |
+| [email-summarizer](./email-summarizer/) | Daily Gmail inbox digest powered by Gemini AI | 8:00 AM IST | ✅ Active |
+| [daily-news-briefing](./daily-news-briefing/) | Curates & summarizes AI/tech news from HackerNews, ProductHunt, etc. | Manual only | 💤 Disabled |
+| [freelance-gig-finder](./freelance-gig-finder/) | Scrapes Upwork, RemoteOK, and Freelancer, ranks gigs using Gemini | Manual only | 💤 Disabled |
 
 ---
 
@@ -38,28 +39,58 @@ Each agent:
 ```
 agents/
 ├── .github/workflows/          ← GitHub Actions (cloud schedules)
-│   ├── daily-news-briefing.yml ← runs news agent daily at 7 AM
-│   ├── freelance-gig-finder.yml← runs gig finder daily at 7 AM
-│   ├── email-summarizer.yml    ← runs email agent daily at 8 AM
+│   ├── job-finder.yml          ← runs job finder daily at 7 AM ✅
+│   ├── email-summarizer.yml    ← runs email agent daily at 8 AM ✅
+│   ├── daily-news-briefing.yml ← DISABLED (manual trigger only)
+│   ├── freelance-gig-finder.yml← DISABLED (manual trigger only)
 │   └── README.md               ← workflow template for new agents
 ├── README.md                   ← You are here
 ├── .gitignore
 │
 ├── shared/                     ← Shared utility code (e.g. mailer)
 │
-├── email-summarizer/           ← Agent 1
+├── job-finder/                 ← AI/ML/DS Job Finder Agent
+│   ├── .env.example
+│   ├── requirements.txt
+│   └── src/
+│       ├── main.py             ← Entry point
+│       ├── config.py           ← Target roles, companies, keywords
+│       ├── job_fetcher.py      ← Scrapes 7 job sources
+│       └── job_analyzer.py     ← Gemini-powered ranking & digest
+│
+├── email-summarizer/           ← Gmail Inbox Summarizer Agent
 │   ├── README.md
-│   ├── .env / .env.example
+│   ├── .env.example
 │   ├── requirements.txt
 │   └── src/
 │       ├── main.py
 │       ├── config.py
 │       ├── email_fetcher.py
 │       ├── summarizer_agent.py
-│       └── report_mailer.py
+│       └── report_mailer.py    ← Shared mailer (used by all agents)
 │
-└── <your-next-agent>/          ← Agent 2, 3, ... (just add a folder!)
+├── daily-news-briefing/        ← News Briefing Agent (disabled)
+│
+└── freelance-gig-finder/       ← Freelance Gig Finder (disabled)
 ```
+
+---
+
+## 🎯 Job Finder Agent — Sources
+
+The job-finder agent scrapes **7 free sources** daily (no API keys needed beyond Gemini):
+
+| Source | Type | What It Finds |
+|--------|------|---------------|
+| RemoteOK | JSON API | Remote AI/ML jobs worldwide |
+| Himalayas | RSS Feed | Curated remote tech roles |
+| Remotive | RSS Feed | Remote-first company jobs |
+| Arbeitnow | JSON API | Global + India job listings |
+| HN Who's Hiring | API | Startup & big-tech roles (monthly threads) |
+| WorkAnywhere | RSS Feed | Developer/AI-focused remote jobs |
+| LinkedIn (via Google) | Web Search | Public LinkedIn job posts |
+
+Jobs are filtered for: `AI Engineer`, `GenAI Engineer`, `Data Scientist`, `ML Engineer`, `Agentic AI`, `LLM Engineer`, `NLP Engineer`, `Deep Learning`, and ranked by relevance to a **fresher/entry-level** profile.
 
 ---
 
@@ -80,8 +111,8 @@ Go to **[repo Settings → Secrets → Actions](https://github.com/hardik-singh7
 ## ➕ Adding a New Agent
 
 1. **Create the agent folder**: `agents/<agent-name>/`
-2. **Add source code**: `src/main.py`, `requirements.txt`, `.env.example`, `README.md`
-3. **Create a workflow**: Copy the template from [`.github/workflows/README.md`](./.github/workflows/README.md)
+2. **Add source code**: `src/main.py`, `requirements.txt`, `.env.example`
+3. **Create a workflow**: `.github/workflows/<agent-name>.yml`
 4. **Add secrets**: Any new API keys go to GitHub Secrets
 5. **Push**. It runs autonomously from now on.
 
@@ -92,7 +123,13 @@ Go to **[repo Settings → Secrets → Actions](https://github.com/hardik-singh7
 Each agent can also run on your local machine:
 
 ```bash
+# Job Finder
+cd job-finder
+.\venv\Scripts\python src\main.py             # run + save report
+.\venv\Scripts\python src\main.py --email      # run + save + email report
+
+# Email Summarizer
 cd email-summarizer
-.\venv\Scripts\python src\main.py --now           # run + save report
-.\venv\Scripts\python src\main.py --now --email    # run + save + email report
+.\venv\Scripts\python src\main.py --now        # run + save report
+.\venv\Scripts\python src\main.py --now --email # run + save + email report
 ```

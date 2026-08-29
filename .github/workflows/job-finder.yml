@@ -1,21 +1,20 @@
-name: "📰 Daily News Briefing Agent"
+name: "🎯 Job Finder Agent"
 
 on:
-  # DISABLED — schedule commented out (agent switched off)
-  # schedule:
-  #   # 7:00 AM IST = 1:30 AM UTC
-  #   - cron: "30 1 * * *"
+  schedule:
+    # 7:00 AM IST = 1:30 AM UTC
+    - cron: "30 1 * * *"
 
   # Allow manual trigger from the Actions tab
   workflow_dispatch:
 
 jobs:
-  run-news-briefing:
-    name: "🚀 Fetch & Summarize News"
+  run-job-finder:
+    name: "🚀 Fetch & Rank Jobs"
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: daily-news-briefing
+        working-directory: job-finder
 
     steps:
       - name: "📥 Checkout repository"
@@ -29,7 +28,7 @@ jobs:
       - name: "📦 Install dependencies"
         run: pip install -r requirements.txt
 
-      - name: "🚀 Run News Briefing Agent"
+      - name: "🚀 Run Job Finder Agent"
         env:
           GMAIL_EMAIL: ${{ secrets.GMAIL_EMAIL }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
