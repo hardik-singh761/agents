@@ -78,19 +78,19 @@ agents/
 
 ## 🎯 Job Finder Agent — Sources
 
-The job-finder agent scrapes **7 free sources** daily (no API keys needed beyond Gemini):
+The job-finder agent scrapes **7 India-focused sources** daily (no API keys needed beyond Gemini):
 
 | Source | Type | What It Finds |
 |--------|------|---------------|
-| RemoteOK | JSON API | Remote AI/ML jobs worldwide |
+| AI-Jobs.net | RSS Feed | Dedicated AI/ML job board — India & Remote roles |
+| Greenhouse ATS | Public API | **Direct from career pages** of NVIDIA, Razorpay, CRED, Meesho, PhonePe, Databricks, Anthropic, etc. |
+| Lever ATS | Public API | **Direct from career pages** of Swiggy, Atlassian, Postman, BrowserStack, Notion, etc. |
+| Jobicy | JSON API | Remote jobs filtered for India-accepting roles |
 | Himalayas | RSS Feed | Curated remote tech roles |
-| Remotive | RSS Feed | Remote-first company jobs |
-| Arbeitnow | JSON API | Global + India job listings |
-| HN Who's Hiring | API | Startup & big-tech roles (monthly threads) |
-| WorkAnywhere | RSS Feed | Developer/AI-focused remote jobs |
-| LinkedIn (via Google) | Web Search | Public LinkedIn job posts |
+| HN Who's Hiring | API | Startup & big-tech roles — filtered for India/Remote |
+| Arbeitnow | JSON API | Global listings filtered for India locations |
 
-Jobs are filtered for: `AI Engineer`, `GenAI Engineer`, `Data Scientist`, `ML Engineer`, `Agentic AI`, `LLM Engineer`, `NLP Engineer`, `Deep Learning`, and ranked by relevance to a **fresher/entry-level** profile.
+Jobs are filtered for: `AI Engineer`, `GenAI Engineer`, `Data Scientist`, `ML Engineer`, `Agentic AI`, `LLM Engineer`, `NLP Engineer`, `Deep Learning` — and **only India-based or India-accepting Remote roles** are included.
 
 ---
 

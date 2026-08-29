@@ -62,9 +62,17 @@ class JobFetcher:
         self.all_jobs.extend(arbeitnow)
         logging.info(f"Arbeitnow: fetched {len(arbeitnow)} jobs")
 
+        # Hard filter out senior/staff/lead roles from the title
+        fresher_jobs = []
+        senior_terms = ["senior", "sr.", "sr ", "staff", "principal", "lead", "director", "manager", "head of", "vp ", "architect", "founding", "experienced"]
+        for job in self.all_jobs:
+            title_lower = job.get("title", "").lower()
+            if not any(term in title_lower for term in senior_terms):
+                fresher_jobs.append(job)
+
         # Deduplicate
-        self.all_jobs = self._deduplicate(self.all_jobs)
-        logging.info(f"Total unique jobs after dedup: {len(self.all_jobs)}")
+        self.all_jobs = self._deduplicate(fresher_jobs)
+        logging.info(f"Total unique fresher-friendly jobs after dedup: {len(self.all_jobs)}")
         return self.all_jobs
 
     def _is_relevant(self, text: str) -> bool:
